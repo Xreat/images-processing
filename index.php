@@ -1,6 +1,16 @@
 <form action="index.php?action=create" method="POST" enctype="multipart/form-data">
-         <input type="file" name="image" /><br>
-         <input type="submit" value="Dodaj"/><br><br><br>
+        <input type="file" name="image" /><br>
+	<select name="color">
+                <option value="black">Black</option>
+                <option value="white">White</option>
+        </select><br>
+	<select name="position">
+                <option value="br">Bottom-Right</option>
+                <option value="bl">Bottom-Left</option>
+		<option value="tr">Top-Right</option>
+                <option value="tl">Top-Left</option>
+        </select><br>
+        <input type="submit" value="Dodaj"/><br><br><br>
 </form>
 <?php
 $action = $_GET['action'];
@@ -32,8 +42,11 @@ $errors= array();
       }
 
 //set the source image (foreground)
-$sourceImage = 'mark.png';
-
+if($_POST['color'] == 'white') {
+	$sourceImage = 'mark_white.png';
+} else {
+	$sourceImage = 'mark.png';
+}
 //set the destination image (background)
 $destImage = "images_src/".$file_name;
 
@@ -58,8 +71,23 @@ $dest = imagescale($dest, 1024);
 list($destWidth, $destHeight) = getimagesize($destImage);
 	$newDestHeight = $destHeight/$destWidth * 1024;
 //set the x and y positions of the source image on top of the destination image
-$src_xPosition = 1024-256; //75 pixels from the left
-$src_yPosition = $newDestHeight-256; //50 pixels from the top
+
+if($_POST['position'] == 'br') {
+	$src_xPosition = 1024-256; //75 pixels from the left
+	$src_yPosition = $newDestHeight-256; //50 pixels from the top
+}
+if($_POST['position'] == 'bl') {
+        $src_xPosition = 0; //75 pixels from the left
+        $src_yPosition = $newDestHeight-256; //50 pixels from the top
+}   
+if($_POST['position'] == 'tr') {
+        $src_xPosition = 1024-256; //75 pixels from the left
+        $src_yPosition = 10; //50 pixels from the top
+}   
+if($_POST['position'] == 'tl') {
+        $src_xPosition = 0; //75 pixels from the left
+        $src_yPosition = 10; //50 pixels from the top
+}   
 
 //set the x and y positions of the source image to be copied to the destination image
 $src_cropXposition = 0; //do not crop at the side
